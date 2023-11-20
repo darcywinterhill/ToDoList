@@ -1,10 +1,17 @@
-﻿using TESTtodo;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Globalization;
+using System.Resources;
+using TESTtodo;
 
 
 ToDoList toDoList = new ToDoList();
-ToDo todo = new ToDo();
-List<ToDo> list = toDoList.ToDos;
-int totalToDos = list.Count(); //Count nr of tasks
+//ToDo todo = new ToDo();
+//List<ToDo> list = toDoList.ToDos;
+FileHandle fileHandle = new FileHandle();
+int totalToDos = toDoList.ToDos.Count();
+
 
 
 void ShowOptions()
@@ -20,8 +27,6 @@ void ShowOptions()
     Console.WriteLine(" (4) Spara och avsluta.");
 }
 
-
-
 while (true)
 {
     ShowOptions();
@@ -30,27 +35,52 @@ while (true)
     Console.Write("Mitt val: ");
     string userInput = Console.ReadLine();
 
-    switch (userInput)
+    bool isInputInt = int.TryParse(userInput, out int input);
+
+    try //Try-catch if input is not int type
     {
-        case "1":
+        input = Convert.ToInt32(userInput);
+    }
+    catch (FormatException)
+    {
+        while (!isInputInt)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("Gör ditt val genom att välja (1), (2), (3) eller (4): ");
+            Console.ResetColor();
+            userInput = Console.ReadLine();
+            isInputInt = int.TryParse(userInput, out input);
+        }
+    }
 
+    while (input != 1 && input != 2 && input != 3 && input != 4)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write("Du kan endast välja (1), (2), (3) eller (4): ");
+        Console.ResetColor();
+        userInput = Console.ReadLine();
+        isInputInt = int.TryParse(userInput, out input);
+    }
+
+    switch (input)
+    {
+        case 1:
             break;
-
-        case "2":
+        case 2:
             toDoList.AddToDo(); // Receive task input and add to list
-            toDoList.SaveListToFile(list, "ToDoList.txt"); //Add to text file
+            fileHandle.SaveListToFile(fileHandle.filePath);//Add to text file
             break;
-        case "3":
+        case 3:
             break;
-        case "4":
+        case 4:
             break;
-
     }
 
     //Display tasks, read from file
-    toDoList.ShowList();
+    fileHandle.LoadDataFromFile();
+    toDoList.PrintList();
 
-    totalToDos = list.Count(); //Count nr of tasks
+    totalToDos = toDoList.ToDos.Count(); //Count nr of tasks
     Console.WriteLine($"Antal uppgifter: {totalToDos}."); //Show nr of tasks
 
     Console.ReadLine();

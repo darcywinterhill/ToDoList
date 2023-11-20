@@ -1,4 +1,7 @@
-﻿namespace TESTtodo
+﻿using System.Reflection;
+using System.Threading.Tasks;
+
+namespace TESTtodo
 {
     internal class ToDoList
     {
@@ -9,22 +12,7 @@
             ToDos = new List<ToDo>();
         }
 
-        //Show ToDo list
-        public void ShowList()
-        {
-            Console.WriteLine("--------------------------------");
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine(" >>> DIN TO-DO-LISTA <<<");
-            Console.ResetColor();
-            Console.WriteLine();
-
-            string readText = File.ReadAllText("toDoList.txt");
-            Console.WriteLine(readText);
-            Console.WriteLine();
-            Console.WriteLine("------------------------");
-        }
-
-        //Receive task input and add to list
+        //Receive task input and add to list Method
         public void AddToDo()
         {
             while (true)
@@ -41,7 +29,7 @@
 
                 bool isTitleEmpty = string.IsNullOrWhiteSpace(title);
 
-                if (title == "exit")
+                if (title == "4")
                 {
                     break;
                 }
@@ -61,7 +49,7 @@
 
                 bool isProjectEmpty = string.IsNullOrWhiteSpace(project);
 
-                if (project == "exit")
+                if (project == "4")
                 {
                     break;
                 }
@@ -79,7 +67,7 @@
                 Console.Write("Deadline (YY/MM/DD): ");
                 string dueDateInput = Console.ReadLine();
 
-                if (dueDateInput.ToLower().Trim() == "exit")
+                if (dueDateInput.ToLower().Trim() == "4")
                 {
                     break;
                 }
@@ -118,28 +106,72 @@
             }
         }
 
-        //Save properties to text file
-        public void SaveListToFile(List<ToDo> list, string filePath)
+        //Print list Method
+        public void PrintList()
         {
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                foreach (ToDo toDo in list)
-                {
+            FileHandle fileHandler = new FileHandle();
 
-                    writer.WriteLine("------------------------");
-                    writer.WriteLine($" Uppgift: {toDo.Title}");
-                    writer.WriteLine($" Deadline: {toDo.DueDate.ToString("yy/MM/dd")}");
-                    writer.WriteLine($" Projekt: {toDo.Project}");
-                    if (toDo.Done)
+            Console.WriteLine();
+            Console.Write("Vill du se listan sorterad på (1) deadline eller (2) projekt? "); //Sort by project or due date
+            string showListInput = Console.ReadLine();
+
+            bool isInt = int.TryParse(showListInput, out int intInput);
+
+            //Error handling for wrong type input
+            while (!isInt) //If not an int
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Ange en siffra för att se en sorterad lista - " +
+                            "(1) för sorterad på deadline och (2) för sorterad på projekt: ");
+                Console.ResetColor();
+                showListInput = Console.ReadLine();
+                isInt = int.TryParse(showListInput, out intInput);
+            }
+
+            if (isInt)
+            {
+                while (intInput != 1 && intInput != 2) //If input is not 1 or 2
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Ange (1) för lsita sorterad på deadline och (2) för lista sorerad på projekt: ");
+                    Console.ResetColor();
+                    showListInput = Console.ReadLine();
+                    isInt = int.TryParse(showListInput, out intInput);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("--------------------------------");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(" >>> DIN TO-DO-LISTA <<<");
+                Console.ResetColor();
+                Console.WriteLine();
+
+                if (showListInput == "1")
+                {
+                    ToDos = ToDos.OrderBy(t => t.DueDate).ToList();
+                }
+                else if (showListInput == "2")
+                {
+                    ToDos = ToDos.OrderBy(t => t.Project).ToList();
+                }
+
+                foreach (ToDo todo in ToDos)
+                {
+                    Console.WriteLine($"Uppgift: {todo.Title}");
+                    Console.WriteLine($"Projekt: {todo.Project}");
+                    Console.WriteLine($"Deadline: {todo.DueDate.ToString("yy/MM/dd")}");
+                    if (todo.Done == false)
                     {
-                        writer.WriteLine(" Klart: JA");
+                        Console.WriteLine($"Klart: NEJ");
                     }
-                    else
+                    else if (todo.Done == true)
                     {
-                        writer.WriteLine(" Klart: NEJ");
+                        Console.WriteLine($"Klart: JA");
                     }
+                    Console.WriteLine("---");
                 }
             }
+            
         }
     }
 }

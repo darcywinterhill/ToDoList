@@ -10,22 +10,12 @@
             Done = done;
         }
 
-        public List<ToDo> Tasks { get; set; }
-        public ToDo()
-        {
-            Tasks = new List<ToDo>();
-        }
+        public ToDo() { }
 
         public string Title { get; set; }
-        public DateTime DueDate { get; set; }
         public string Project { get; set; }
+        public DateTime DueDate { get; set; }
         public bool Done { get; set; }
-
-
-        //string Print()
-        //{
-        //    return todo.Title + todo.DueDate.ToString("yyyy/MM/dd") + todo.Project;
-        //}
 
     }
 }
