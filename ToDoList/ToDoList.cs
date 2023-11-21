@@ -332,11 +332,35 @@
                     toDoToEdit.DueDate = DateTime.Parse(newValue);
                     break;
                 case 4:
-                    toDoToEdit.Done = bool.Parse(newValue);
+                    if (newValue.ToUpper() == "JA")
+                    {
+                        toDoToEdit.Done = true;
+                    }
+                    else if (newValue.ToUpper() == "NEJ")
+                    {
+                        toDoToEdit.Done = false;
+                    }
+                    
                     break;
                 default:
                     Console.WriteLine("Ogiltig input.");
                     break;
+            }
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Din uppgift uppdaterades!");
+            Console.ResetColor();
+            Console.WriteLine();
+            Console.WriteLine($"Uppgift: {toDoToEdit.Title}");
+            Console.WriteLine($"Projekt: {toDoToEdit.Project}");
+            Console.WriteLine($"Deadline: {toDoToEdit.DueDate.ToString("yy/MM/dd")}");
+            if (toDoToEdit.Done)
+            {
+                Console.WriteLine("Klart: JA");
+            }
+            else if (!toDoToEdit.Done)
+            {
+                Console.WriteLine("Klart: NEJ");
             }
             SaveListToFile(filePath);
         }
@@ -347,7 +371,9 @@
             LoadDataFromFile();
 
             Console.WriteLine();
-            Console.Write("Vill du se listan sorterad på (1) deadline eller (2) projekt? "); //Sort by project or due date
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write(" >> Vill du se listan sorterad på (1) deadline eller (2) projekt? "); //Sort by project or due date
+            Console.ResetColor();
             string showListInput = Console.ReadLine();
 
             bool isInt = int.TryParse(showListInput, out int intInput);
@@ -405,7 +431,9 @@
                     {
                         Console.WriteLine($"Klart: JA");
                     }
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
                     Console.WriteLine("---");
+                    Console.ResetColor();
                     id++;
                 }
             }
