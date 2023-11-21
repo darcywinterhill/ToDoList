@@ -74,6 +74,7 @@
                         AddToDo(); //Add ToDo to list
                         break;
                     case 3:
+                        EditToDo();
                         break;
                     case 4:
                         Console.WriteLine();
@@ -237,7 +238,7 @@
             }
         }
 
-        //Save list to file Method
+        //Save list to file
         public void SaveListToFile(string filePath)
         {
             using (StreamWriter writer = new StreamWriter(filePath))
@@ -250,7 +251,7 @@
             }
         }
 
-        //Load list from file Method
+        //Load list from file
         public void LoadDataFromFile()
         {
             if (File.Exists(filePath))
@@ -275,6 +276,69 @@
                     }
                 }
             }
+        }
+
+        public void EditToDo()
+        {
+            Console.WriteLine();
+
+            int id = 1;
+            foreach (ToDo todo in ToDos)
+            {
+                Console.WriteLine($"Id: {id}");
+                Console.WriteLine($"Uppgift: {todo.Title}");
+                Console.WriteLine($"Projekt: {todo.Project}");
+                Console.WriteLine($"Deadline: {todo.DueDate.ToString("yy/MM/dd")}");
+                if (todo.Done == false)
+                {
+                    Console.WriteLine($"Klart: NEJ");
+                }
+                else if (todo.Done == true)
+                {
+                    Console.WriteLine($"Klart: JA");
+                }
+                Console.WriteLine("---");
+                id++;
+            }
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write(" >> Vilken uppgift vill du uppdatera? Ange Id: ");
+            Console.ResetColor();
+            int idToEdit = int.Parse(Console.ReadLine());
+
+            ToDo toDoToEdit = ToDos[idToEdit - 1];
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write(" >> Vill du uppdatera (1) 'Uppgift', (2) 'Projekt', (3) 'Deadline' " +
+                                "eller (4) om uppgiften är klar eller inte? ");
+            Console.ResetColor();
+            int propertyChoice = int.Parse(Console.ReadLine());
+            Console.ResetColor();
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write(" >> Uppdatera din uppgift: ");
+            Console.ResetColor();
+            string newValue = Console.ReadLine();
+
+            switch (propertyChoice)
+            {
+                case 1:
+                    toDoToEdit.Title = newValue;
+                    break;
+                case 2:
+                    toDoToEdit.Project = newValue;
+                    break;
+                case 3:
+                    toDoToEdit.DueDate = DateTime.Parse(newValue);
+                    break;
+                case 4:
+                    toDoToEdit.Done = bool.Parse(newValue);
+                    break;
+                default:
+                    Console.WriteLine("Ogiltig input.");
+                    break;
+            }
+            SaveListToFile(filePath);
         }
 
         //Print list Method
