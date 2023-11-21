@@ -1,6 +1,6 @@
 ﻿namespace TESTtodo
 {
-    internal class ToDo
+    public class ToDo
     {
         public ToDo(string title, string project, DateTime dueDate, bool done)
         {

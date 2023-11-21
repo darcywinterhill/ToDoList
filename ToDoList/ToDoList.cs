@@ -1,15 +1,89 @@
-﻿using System.Reflection;
-using System.Threading.Tasks;
-
-namespace TESTtodo
+﻿namespace TESTtodo
 {
-    internal class ToDoList
+    public class ToDoList
     {
         public List<ToDo> ToDos { get; set; }
 
         public ToDoList()
         {
             ToDos = new List<ToDo>();
+        }
+
+        //File path for text file
+        public string filePath = "textList.txt";
+
+        //Show options for ToDo list
+        public void ShowOptions()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Gör ditt val -->");
+            Console.ResetColor();
+            Console.WriteLine();
+            Console.WriteLine(" (1) Visa ToDo-listan (sorterad på deadline eller projekt).");
+            Console.WriteLine(" (2) Lägg till en uppgift till listan.");
+            Console.WriteLine(" (3) Redigera en uppgift (uppdatera, markera som klar, ta bort).");
+            Console.WriteLine(" (4) Spara och avsluta.");
+        }
+
+        //Choose what to do with ToDo list
+        public void ChooseOption()
+        {
+            while (true)
+            {
+                ShowOptions();
+
+                Console.WriteLine();
+                Console.Write("Mitt val: ");
+                string userInput = Console.ReadLine();
+
+                bool isInputInt = int.TryParse(userInput, out int input);
+
+                try //Try-catch if input is not int type
+                {
+                    input = Convert.ToInt32(userInput);
+                }
+                catch (FormatException)
+                {
+                    while (!isInputInt) //Error message if input is not an int
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("Gör ditt val genom att välja (1), (2), (3) eller (4): ");
+                        Console.ResetColor();
+                        userInput = Console.ReadLine();
+                        isInputInt = int.TryParse(userInput, out input);
+                    }
+                }
+
+                while (input != 1 && input != 2 && input != 3 && input != 4) //Error message if input is not 1, 2, 3 or 4
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Du kan endast välja (1), (2), (3) eller (4): ");
+                    Console.ResetColor();
+                    userInput = Console.ReadLine();
+                    isInputInt = int.TryParse(userInput, out input);
+                }
+
+                switch (input)
+                {
+                    case 1: //
+                        LoadDataFromFile(); //Load saved list
+                        PrintList(); //Display saved list
+                        break;
+                    case 2:
+                        AddToDo(); //Add ToDo to list
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.WriteLine(" >>> HEJDÅ! <<<");
+                        Console.ResetColor();
+                        System.Environment.Exit(1); //Exit application
+                        break;
+                }
+            }
         }
 
         //Receive task input and add to list Method
@@ -29,11 +103,6 @@ namespace TESTtodo
 
                 bool isTitleEmpty = string.IsNullOrWhiteSpace(title);
 
-                if (title == "4")
-                {
-                    break;
-                }
-
                 while (isTitleEmpty)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -49,11 +118,6 @@ namespace TESTtodo
 
                 bool isProjectEmpty = string.IsNullOrWhiteSpace(project);
 
-                if (project == "4")
-                {
-                    break;
-                }
-
                 while (isProjectEmpty)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -66,11 +130,6 @@ namespace TESTtodo
                 //Deadline input
                 Console.Write("Deadline (YY/MM/DD): ");
                 string dueDateInput = Console.ReadLine();
-
-                if (dueDateInput.ToLower().Trim() == "4")
-                {
-                    break;
-                }
 
                 DateTime dueDate;
                 bool isDate = DateTime.TryParse(dueDateInput, out dueDate);
@@ -93,7 +152,7 @@ namespace TESTtodo
                 }
 
                 // Error handling if date input is today or earlier
-                while (dueDate <= DateTime.Now) 
+                while (dueDate <= DateTime.Now)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("Ange ett datum längre fram än dagens datum: ");
@@ -102,14 +161,126 @@ namespace TESTtodo
                     isDate = DateTime.TryParse(dueDateInput, out dueDate);
                 }
 
-                ToDos.Add(new ToDo(title, project, dueDate, false)); //Add to ToDo list
+                try
+                {
+                    ToDos.Add(new ToDo(title, project, dueDate, false));
+                }
+                catch (Exception)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Uppgiften registrerades inte.");
+                    Console.ResetColor();
+                }
+
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write(" >> Välj (4) för att spara uppgiften till din ToDo-lista," +
+                    " eller (2) för att fortsätta lägga till uppgifter: ");//Add to ToDo list
+                Console.ResetColor();
+                string addInput = Console.ReadLine();
+
+                bool isInputInt = int.TryParse(addInput, out int input);
+
+                try //Try-catch if input is not int type
+                {
+                    input = Convert.ToInt32(addInput);
+                }
+                catch (FormatException)
+                {
+                    while (!isInputInt) //Error message if input is not an int
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("Välj (4) för att spara och (2) för att fortsätta lägga till uppgifter: ");
+                        Console.ResetColor();
+                        addInput = Console.ReadLine();
+                        isInputInt = int.TryParse(addInput, out input);
+                    }
+                }
+
+                while (input != 4 && input != 2) //Error message if input is not 4 or 2
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Du kan endast välja (4) eller (2): ");
+                    Console.ResetColor();
+                    addInput = Console.ReadLine();
+                    isInputInt = int.TryParse(addInput, out input);
+                }
+
+                if (input == 4) //Save ToDo/s to file
+                {
+                    try
+                    {
+                        SaveListToFile(filePath);
+
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Uppgiften sparades till ToDo-listan!");
+                        Console.ResetColor();
+                    }
+                    catch (Exception)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Uppgiften kunde inte sparas till ToDo-listan.");
+                        Console.ResetColor();
+                    }
+                    finally
+                    {
+                        ChooseOption();
+                    }
+                }
+
+                else if (input == 2) //Continue adding ToDos
+                {
+                    AddToDo();
+                }
+
+            }
+        }
+
+        //Save list to file Method
+        public void SaveListToFile(string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                foreach (ToDo toDo in ToDos)
+                {
+                    writer.WriteLine($"{toDo.Title},{toDo.Project},{toDo.DueDate.ToString("yy/MM/dd")},{toDo.Done}");
+
+                }
+            }
+        }
+
+        //Load list from file Method
+        public void LoadDataFromFile()
+        {
+            if (File.Exists(filePath))
+            {
+                ToDos.Clear();
+                string[] lines = File.ReadAllLines(filePath);
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split(',');
+                    if (parts.Length == 4)
+                    {
+                        string title = parts[0];
+                        string project = parts[1];
+                        DateTime dueDate = DateTime.Parse(parts[2]);
+                        bool done = bool.Parse(parts[3]);
+
+                        ToDo toDo = new ToDo(title, project, dueDate, done);
+                        //{
+                        //    Done = done
+                        //};
+                        ToDos.Add(toDo);
+                    }
+                }
             }
         }
 
         //Print list Method
         public void PrintList()
         {
-            FileHandle fileHandler = new FileHandle();
+            LoadDataFromFile();
 
             Console.WriteLine();
             Console.Write("Vill du se listan sorterad på (1) deadline eller (2) projekt? "); //Sort by project or due date
@@ -133,7 +304,7 @@ namespace TESTtodo
                 while (intInput != 1 && intInput != 2) //If input is not 1 or 2
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Ange (1) för lsita sorterad på deadline och (2) för lista sorerad på projekt: ");
+                    Console.Write("Ange (1) för lista sorterad på deadline och (2) för lista sorterad på projekt: ");
                     Console.ResetColor();
                     showListInput = Console.ReadLine();
                     isInt = int.TryParse(showListInput, out intInput);
@@ -155,8 +326,10 @@ namespace TESTtodo
                     ToDos = ToDos.OrderBy(t => t.Project).ToList();
                 }
 
+                int id = 1;
                 foreach (ToDo todo in ToDos)
                 {
+                    Console.WriteLine($"Id: {id}");
                     Console.WriteLine($"Uppgift: {todo.Title}");
                     Console.WriteLine($"Projekt: {todo.Project}");
                     Console.WriteLine($"Deadline: {todo.DueDate.ToString("yy/MM/dd")}");
@@ -169,9 +342,9 @@ namespace TESTtodo
                         Console.WriteLine($"Klart: JA");
                     }
                     Console.WriteLine("---");
+                    id++;
                 }
             }
-            
         }
     }
 }
