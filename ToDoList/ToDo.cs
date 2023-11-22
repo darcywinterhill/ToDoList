@@ -10,7 +10,7 @@
             Done = done;
         }
 
-        public ToDo() { }
+        //public ToDo() { }
 
         public string Title { get; set; }
         public string Project { get; set; }
