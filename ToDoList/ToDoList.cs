@@ -1,4 +1,4 @@
-﻿namespace TESTtodo
+﻿namespace ToDoList
 {
     public class ToDoList
     {
