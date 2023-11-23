@@ -10,8 +10,6 @@
             Done = done;
         }
 
-        //public ToDo() { }
-
         public string Title { get; set; }
         public string Project { get; set; }
         public DateTime DueDate { get; set; }

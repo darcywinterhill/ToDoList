@@ -1,26 +1,26 @@
 ﻿using TESTtodo;
 
 ToDoList toDoList = new ToDoList();
+FileHandle fileHandle = new FileHandle("textList.txt");
 
 //Welcome message
 Console.WriteLine("Välkommen till din ToDo-lista!");
-Console.WriteLine($"Du har {CountToDos()} uppgifter att göra och du har bockat av {CountDoneToDos()} stycken.");
+Console.WriteLine($"Du har {NotDoneToDos()} uppgifter att göra och du har bockat av {DoneToDos()} stycken.");
 
 //Run program
 toDoList.ChooseOption();
 
-//Count ToDo's saved in list
-int CountToDos()
+//Count ToDo's not done in list
+int NotDoneToDos()
 {
-
-    toDoList.LoadDataFromFile();
-    return toDoList.ToDos.Count() - CountDoneToDos();
+    fileHandle.LoadDataFromFile(toDoList);
+    return toDoList.ToDos.Count() - DoneToDos();
 }
 
-int CountDoneToDos()
+//Count ToDo's done in list
+int DoneToDos()
 {
-
-    toDoList.LoadDataFromFile();
+    fileHandle.LoadDataFromFile(toDoList);
     return toDoList.ToDos.Where(t => t.Done == true).Count();
 }
 
