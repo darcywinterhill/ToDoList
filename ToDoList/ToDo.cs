@@ -1,4 +1,4 @@
-﻿namespace ToDoList
+﻿namespace ToDoListProject
 {
     public class ToDo
     {
