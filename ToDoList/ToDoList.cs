@@ -19,6 +19,7 @@
          * ShowOptions
          * DisplayErrorMessage
          * DisplaySuccessMessage
+         * HandleListIsEmpty
          * ShowToDoAndId
          * ChooseOption
          * AddToDo
@@ -53,6 +54,20 @@
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(message);
             Console.ResetColor();
+        }
+
+        //List is empty message
+        public void HandleListIsEmpty()
+        {
+            int listLength = ToDos.Count();
+
+            while (listLength == 0)
+            {
+                Console.WriteLine();
+                DisplayErrorMessage("Din ToDo-lista är tom.");
+                Console.WriteLine();
+                ChooseOption();
+            }
         }
 
         //Displays the ToDos and adds an Id 
@@ -117,13 +132,14 @@
                 switch (optionInputInt)
                 {
                     case 1: //
-                        fileHandle.LoadDataFromFile(this); //Load saved list
+                        HandleListIsEmpty();
                         PrintList(); //Display saved list
                         break;
                     case 2:
                         AddToDo(); //Add ToDo to list
                         break;
                     case 3:
+                        HandleListIsEmpty();
                         EditToDo(); //Edit ToDo and save to list
                         break;
                     case 4:
@@ -216,7 +232,7 @@
 
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.DarkYellow; //Add to ToDo list or continue adding ToDos
-                Console.Write(  " >> Välj (1) för att spara uppgiften till din ToDo-lista," +
+                Console.Write(" >> Välj (1) för att spara uppgiften till din ToDo-lista," +
                                 " eller (2) för att fortsätta lägga till uppgifter: ");
                 Console.ResetColor();
                 string saveInput = Console.ReadLine();
@@ -306,6 +322,7 @@
 
             //Error handling if Id doesn't exist in list
             int listLength = ToDos.Count();
+
             while (listLength < idToEdit)
             {
                 DisplayErrorMessage("Det finns inte någon uppgift med det Id't. Ange ett annat Id: ");
@@ -313,15 +330,16 @@
                 isIdInputInt = int.TryParse(idInput, out idToEdit);
             }
 
+
             ToDo toDoToEdit = ToDos[idToEdit - 1]; //The ToDo to edit
 
             //Input for what field to update/delete
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine(" >> Uppdatera - ");
-            Console.WriteLine(" (1) 'Uppgift'");
-            Console.WriteLine(" (2) 'Projekt'");
-            Console.WriteLine(" (3) 'Deadline'");
+            Console.WriteLine(" (1) Uppgift");
+            Console.WriteLine(" (2) Projekt");
+            Console.WriteLine(" (3) Deadline");
             Console.WriteLine(" (4) Om uppgiften är klar eller inte. Uppdatera med JA (klar) och NEJ (inte klar).");
             Console.WriteLine(" (5) Radera uppgiften.");
             Console.ResetColor();

@@ -16,7 +16,7 @@
             {
                 foreach (ToDo toDo in toDoList.ToDos)
                 {
-                    writer.WriteLine(   $"{toDo.Title}," +
+                    writer.WriteLine($"{toDo.Title}," +
                                         $"{toDo.Project}," +
                                         $"{toDo.DueDate.ToString("yy/MM/dd")}," +
                                         $"{toDo.Done}");
