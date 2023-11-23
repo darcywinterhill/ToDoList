@@ -15,6 +15,16 @@
         //File path for text file
         public string filePath = "textList.txt";
 
+        /* ** LIST OF METHODS **
+         * ShowOptions
+         * DisplayErrorMessage
+         * DisplaySuccessMessage
+         * ShowToDoAndId
+         * ChooseOption
+         * AddToDo
+         * EditToDo
+         * PrintList */
+
         //Show options for ToDo list
         public void ShowOptions()
         {
