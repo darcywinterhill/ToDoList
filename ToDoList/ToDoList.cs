@@ -17,6 +17,7 @@
 
         /* ** LIST OF METHODS **
          * ShowOptions
+         * ExitApp
          * DisplayErrorMessage
          * DisplaySuccessMessage
          * HandleListIsEmpty
@@ -38,6 +39,15 @@
             Console.WriteLine(" (2) Lägg till en uppgift till listan.");
             Console.WriteLine(" (3) Redigera en uppgift (uppdatera eller ta bort).");
             Console.WriteLine(" (4) Spara och avsluta.");
+        }
+
+        public static void ExitApp()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(" >>> HEJDÅ! <<<");
+            Console.ResetColor();
+            System.Environment.Exit(1);
         }
 
         //General error message
@@ -143,11 +153,7 @@
                         EditToDo(); //Edit ToDo and save to list
                         break;
                     case 4:
-                        Console.WriteLine();
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                        Console.WriteLine(" >>> HEJDÅ! <<<");
-                        Console.ResetColor();
-                        System.Environment.Exit(1); //Exit application
+                        ExitApp(); //Exit application
                         break;
                 }
             }
